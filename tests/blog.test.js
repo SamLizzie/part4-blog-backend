@@ -42,7 +42,13 @@ test.only('get all of the blogs', async () => {
 })
 
 test.only('verify id name', async () => {
+    const response = await api.get('/api/blogs')
 
+    assert.strictEqual(response.body[0].hasOwnProperty("id"), true)
+   
+   after(async () => {
+    mongoose.connection.close()
+   })
 })
 
 test.only('post a new blog', async () => {
