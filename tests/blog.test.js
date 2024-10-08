@@ -40,3 +40,29 @@ test.only('get all of the blogs', async () => {
     mongoose.connection.close()
    })
 })
+
+test.only('verify id name', async () => {
+
+})
+
+test.only('post a new blog', async () => {
+    const newBlog = {
+        title: 'Tercer blog',
+        author: 'Jose',
+        url: 'www.google.com',
+        likes: 20
+    }   
+    
+    await api.post('/api/blogs').send(newBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+    const blogs = await Blog.find({})
+    blogs.map(blog => blog.toJSON())
+
+    assert.strictEqual(blogs.length, initialBlogs.length + 1)
+    
+    after(async () => {
+        mongoose.connection.close()
+    })
+})
