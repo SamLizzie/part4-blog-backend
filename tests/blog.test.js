@@ -72,3 +72,23 @@ test.only('post a new blog', async () => {
         mongoose.connection.close()
     })
 })
+
+test.only('delete a blog', async () => {
+    const blogs = await Blog.find({})
+    blogs.map(blog => blog.toJSON)
+    const firstBlog = blogs[0]
+
+    await api
+    .delete(`/api/blogs/${firstBlog.id}`).expect(204)
+
+    const blogsEnd = await Blog.find({})
+    blogsEnd.map(blog => blog.toJSON)
+    assert.strictEqual(blogsEnd.length, blogs.length - 1)
+
+    const titles = blogsEnd.map(r => r.title)
+    assert(!titles.includes(firstBlog.title))
+   
+   after(async () => {
+    mongoose.connection.close()
+   })
+})
