@@ -92,3 +92,27 @@ test.only('delete a blog', async () => {
     mongoose.connection.close()
    })
 })
+
+test.only('update the likes of a blog', async () => {
+    const blogs = await Blog.find({})
+    blogs.map(blog => blog.toJSON)
+    const firstBlog = blogs[0]
+    const newBlog = {
+        title: 'Primer blog',
+        author: 'Edu',
+        url: 'www.google.com',
+        likes: 20
+    }
+
+    await api
+    .put(`/api/blogs/${firstBlog.id}`)
+
+    const blogsEnd = await Blog.find({})
+
+    const likes = blogsEnd.map(r => r.likes)
+    assert.strictEqual(likes[0], firstBlog.likes)
+   
+   after(async () => {
+    mongoose.connection.close()
+    })
+})
